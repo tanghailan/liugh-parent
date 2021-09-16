@@ -32,7 +32,7 @@ public class ControllerAspect {
     public Object validationPoint(ProceedingJoinPoint pjp)throws Throwable{
         Method method = currentMethod(pjp,pjp.getSignature().getName());
         //创建被装饰者
-        AspectApiImpl aspectApi = new AspectApiImpl();
+        AspectApi aspectApi = new AspectApiImpl();
         //是否需要验证参数
         if (!ComUtil.isEmpty(StringUtil.getMethodAnnotationOne(method, ValidationParam.class.getSimpleName()))) {
             new ValidationParamAspect(aspectApi).doHandlerAspect(pjp,method);
