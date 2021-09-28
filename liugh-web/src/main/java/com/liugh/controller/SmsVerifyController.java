@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/smsVerify")
-@Api(description="短信模块")
+@Api(tags = "短信模块")
 public class SmsVerifyController {
 
     @Autowired

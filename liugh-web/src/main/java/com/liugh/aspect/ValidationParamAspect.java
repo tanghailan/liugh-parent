@@ -33,31 +33,32 @@ public class ValidationParamAspect extends AbstractAspectManager{
     }
 
 
-    protected Object execute(ProceedingJoinPoint pjp, Method method) throws Throwable{
-       //获取注解的value值返回
-        String validationParamValue = StringUtil.getMethodAnnotationOne(method,ValidationParam.class.getSimpleName());
-        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
-        ServletRequestAttributes sra = (ServletRequestAttributes) ra;
-        HttpServletRequest request = sra.getRequest();
-        String requestURI = request.getRequestURI();
-        //获取类名上的url
-        String url = getMethodUrl(method,request.getContextPath());
-        Object[] obj = pjp.getArgs();
-        if(requestURI.equals(url)) {
-            if (!ComUtil.isEmpty(validationParamValue)) {
-                for (int i = 0; i < obj.length; i++) {
-                    if (obj[i] instanceof JSONObject) {
-                        JSONObject jsonObject = JSONObject.parseObject(obj[i].toString());
-                        //是否有所有必须参数
-                        hasAllRequired(jsonObject, validationParamValue);
-                    } else {
-                        continue;
-                    }
-                }
-            }
+  @Override
+  protected Object execute(ProceedingJoinPoint pjp, Method method) throws Throwable{
+    //获取注解的value值返回
+    String validationParamValue = StringUtil.getMethodAnnotationOne(method,ValidationParam.class.getSimpleName());
+    RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+    ServletRequestAttributes sra = (ServletRequestAttributes) ra;
+    HttpServletRequest request = sra.getRequest();
+    String requestURI = request.getRequestURI();
+    //获取类名上的url
+    String url = getMethodUrl(method,request.getContextPath());
+    Object[] obj = pjp.getArgs();
+    if(requestURI.equals(url)) {
+      if (!ComUtil.isEmpty(validationParamValue)) {
+        for (int i = 0; i < obj.length; i++) {
+          if (obj[i] instanceof JSONObject) {
+            JSONObject jsonObject = JSONObject.parseObject(obj[i].toString());
+            //是否有所有必须参数
+            hasAllRequired(jsonObject, validationParamValue);
+          } else {
+            continue;
+          }
         }
-        return null;
+      }
     }
+    return null;
+  }
 
     /**
      * 获取方法上的url地址

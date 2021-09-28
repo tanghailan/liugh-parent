@@ -16,6 +16,7 @@ public abstract class AbstractAspectManager implements AspectApi{
         this.aspectApi=aspectApi;
     }
 
+    @Override
     public  Object doHandlerAspect(ProceedingJoinPoint pjp, Method method)throws Throwable{
         return this.aspectApi.doHandlerAspect(pjp,method);
     }

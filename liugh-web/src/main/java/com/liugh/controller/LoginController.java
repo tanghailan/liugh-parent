@@ -24,7 +24,7 @@ import java.util.Map;
  * @since 2018-05-03
  */
 @RestController
-@Api(description="身份认证模块")
+@Api(tags = "身份认证模块")
 public class LoginController {
     @Autowired
     private IUserService userService;

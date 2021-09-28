@@ -55,6 +55,7 @@ public class ResponseModel<T> implements Serializable {
         this.result = result;
     }
 
+    @Override
     public String toString() {
         return "ResponseModel [ result=" + this.result +  ", message=" + this.message + ", code=" + this.code + "]";
     }
