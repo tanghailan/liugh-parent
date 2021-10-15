@@ -27,41 +27,43 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "短信模块")
 public class SmsVerifyController {
 
-    @Autowired
-    private ISmsVerifyService smsVerifyService;
+  @Autowired
+  private ISmsVerifyService smsVerifyService;
 
-    /**
-     * smsType 有四种类型：REG/注册账号 FINDPASSWORD/修改密码 AUTH/登陆验证 MODIFYINFO/修改账号
-     * @param smsType
-     * @param mobile
-     * @return
-     * @throws Exception
-     */
-    @ApiOperation(value="获取验证码接口", notes="路径参数,不需要Authorization")
-    @GetMapping("/{smsType}/{mobile}")
-    @Pass
-    @Log(action="getCaptcha",modelName= "Sms",description="获取短信验证码接口")
-   public ResponseModel<SmsVerify> getCaptcha (@PathVariable String smsType, @PathVariable String mobile) throws Exception{
-        return ResponseHelper.succeed(smsVerifyService.addAndGetMobileAndCaptcha(smsType,mobile));
-   }
+  /**
+   * smsType 有四种类型：REG/注册账号 FINDPASSWORD/修改密码 AUTH/登陆验证 MODIFYINFO/修改账号
+   *
+   * @param smsType
+   * @param mobile
+   * @return
+   * @throws Exception
+   */
+  @ApiOperation(value = "获取验证码接口", notes = "路径参数,不需要Authorization")
+  @GetMapping("/{smsType}/{mobile}")
+  @Pass
+  @Log(action = "getCaptcha", modelName = "Sms", description = "获取短信验证码接口")
+  public ResponseModel<SmsVerify> getCaptcha(@PathVariable String smsType,
+      @PathVariable String mobile) throws Exception {
+    return ResponseHelper.succeed(smsVerifyService.addAndGetMobileAndCaptcha(smsType, mobile));
+  }
 
 
+  @ApiOperation(value = "验证码验证接口", notes = "请求参数,不需要Authorization")
+  @ApiImplicitParams({
+      @ApiImplicitParam(name = "smsType", value = "验证码类型"
+          , required = true, dataType = "String", paramType = "query"),
+      @ApiImplicitParam(name = "mobile", value = "手机号"
+          , required = true, dataType = "String", paramType = "query"),
+      @ApiImplicitParam(name = "captcha", value = "验证码"
+          , required = true, dataType = "String", paramType = "query")
+  })
+  @GetMapping("/captcha/check")
+  @Pass
+  public ResponseModel captchaCheck(@RequestParam String smsType,
+      @RequestParam String mobile, @RequestParam String captcha) throws Exception {
+    smsVerifyService.captchaCheck(mobile, smsType, captcha);
+    return ResponseHelper.succeed(true);
+  }
 
-    @ApiOperation(value="验证码验证接口", notes="请求参数,不需要Authorization")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "smsType", value = "验证码类型"
-                    , required = true, dataType = "String",paramType="query"),
-            @ApiImplicitParam(name = "mobile", value = "手机号"
-                    , required = true, dataType = "String",paramType="query"),
-            @ApiImplicitParam(name = "captcha", value = "验证码"
-                    , required = true, dataType = "String",paramType="query")
-    })
-    @GetMapping("/captcha/check")
-    @Pass
-    public ResponseModel captchaCheck (@RequestParam String smsType,
-            @RequestParam String mobile ,@RequestParam String captcha) throws Exception{
-        smsVerifyService.captchaCheck(mobile,smsType,captcha);
-        return ResponseHelper.succeed(true);
-    }
 }
 
