@@ -59,18 +59,19 @@ public class AllControllerAdvice {
 
     /**
      * 捕捉BusinessException自定义抛出的异常
+     *
      * @return
      */
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
-    public ResponseModel handleBusinessException(BusinessException e) {
+    public ResponseModel<String> handleBusinessException(BusinessException e) {
         String message = e.getMessage();
-        if(message.indexOf(":--:") > 0){
+        if (message.indexOf(":--:") > 0) {
             String[] split = message.split(":--:");
-            return ResponseHelper.failedWith(null,split[1],split[0]);
+            return ResponseHelper.failedWith(null, split[1], split[0]);
         }
-        return ResponseHelper.failedWith(null,CodeEnum.DATA_ERROR.getCode(),message);
+        return ResponseHelper.failedWith(null, CodeEnum.DATA_ERROR.getCode(), message);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -95,9 +96,9 @@ public class AllControllerAdvice {
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     @ResponseBody
     public ResponseModel<String> handleParamJsonException(HttpMessageNotReadableException e) {
-        if(e instanceof HttpMessageNotReadableException) {
-            logger.info("参数错误："+e.getMessage());
-            return ResponseHelper.failed2Message("参数错误："+ e.getMessage());
+        if (e != null) {
+            logger.info("参数错误：" + e.getMessage());
+            return ResponseHelper.failed2Message("参数错误：" + e.getMessage());
         }
         return ResponseHelper.failedWith(null,CodeEnum.PARAM_ERROR.getCode(),e.getMessage());
     }

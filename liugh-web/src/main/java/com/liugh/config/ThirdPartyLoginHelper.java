@@ -29,11 +29,11 @@ public final class ThirdPartyLoginHelper {
      * @param token
      * @param openid
      */
-    public static final ThirdPartyUser getQQUserinfo(String token, String openid) throws Exception {
+    public static ThirdPartyUser getQQUserinfo(String token, String openid) throws Exception {
         ThirdPartyUser user = new ThirdPartyUser();
         String url = ResourcesConfig.THIRDPARTY.getString("getUserInfoURL_qq");
         url = url + "?format=json&access_token=" + token + "&oauth_consumer_key="
-                + ResourcesConfig.THIRDPARTY.getString("app_id_qq") + "&openid=" + openid;
+            + ResourcesConfig.THIRDPARTY.getString("app_id_qq") + "&openid=" + openid;
         String res = HttpUtil.get(url);
         JSONObject json = JSON.parseObject(res);
         if (json.getIntValue("ret") == 0) {
@@ -58,7 +58,7 @@ public final class ThirdPartyLoginHelper {
     }
 
     /** 获取微信用户信息 */
-    public static final ThirdPartyUser getWxUserinfo(String token, String openid) throws Exception {
+    public static ThirdPartyUser getWxUserinfo(String token, String openid) throws Exception {
         ThirdPartyUser user = new ThirdPartyUser();
         String url = ResourcesConfig.THIRDPARTY.getString("getUserInfoURL_wx");
         url = url + "?access_token=" + token + "&openid=" + openid;
@@ -91,16 +91,18 @@ public final class ThirdPartyLoginHelper {
      * @param uid
      * @return
      */
-    public static final ThirdPartyUser getSinaUserinfo(String token, String uid) throws Exception {
+    public static ThirdPartyUser getSinaUserinfo(String token, String uid) throws Exception {
 
         String url = ResourcesConfig.THIRDPARTY.getString("getUserInfoURL_sina");
         url = url + "?access_token=" + token + "&uid=" + uid;
         String res = HttpUtil.get(url);
         JSONObject json = JSON.parseObject(res);
         String name = json.getString("name");
-        String nickName = StringUtils.isBlank(json.getString("screen_name")) ? name : json.getString("screen_name");
-        ThirdPartyUser user =ThirdPartyUser.builder().avatarUrl(json.getString("avatar_large")).username(nickName)
-                .token(token).openid(uid).provider("sina").build();
+        String nickName = StringUtils.isBlank(json.getString("screen_name")) ? name
+            : json.getString("screen_name");
+        ThirdPartyUser user = ThirdPartyUser.builder().avatarUrl(json.getString("avatar_large"))
+            .username(nickName)
+            .token(token).openid(uid).provider("sina").build();
         if ("f".equals(json.getString("gender"))) {
             user.setGender("0");
         } else {
@@ -116,13 +118,18 @@ public final class ThirdPartyLoginHelper {
      * @param host
      * @return
      */
-    public static final Map<String, String> getQQTokenAndOpenid(String code, String host) throws Exception {
+    public static Map<String, String> getQQTokenAndOpenid(String code, String host)
+        throws Exception {
         Map<String, String> map = new HashMap<String, String>();
         // 获取令牌
         String tokenUrl = ResourcesConfig.THIRDPARTY.getString("accessTokenURL_qq");
-        tokenUrl = tokenUrl + "?grant_type=authorization_code&client_id=" + ResourcesConfig.THIRDPARTY.getString("app_id_qq")
-        + "&client_secret=" + ResourcesConfig.THIRDPARTY.getString("app_key_qq") + "&code=" + code
-        + "&redirect_uri=http://" + host + ResourcesConfig.THIRDPARTY.getString("redirect_url_qq");
+        tokenUrl =
+            tokenUrl + "?grant_type=authorization_code&client_id=" + ResourcesConfig.THIRDPARTY
+                .getString("app_id_qq")
+                + "&client_secret=" + ResourcesConfig.THIRDPARTY.getString("app_key_qq") + "&code="
+                + code
+                + "&redirect_uri=http://" + host + ResourcesConfig.THIRDPARTY
+                .getString("redirect_url_qq");
         String tokenRes = HttpUtil.get(tokenUrl);
         if (tokenRes != null && tokenRes.indexOf("access_token") > -1) {
             Map<String, String> tokenMap = toMap(tokenRes);
@@ -149,12 +156,15 @@ public final class ThirdPartyLoginHelper {
      * @param host
      * @return
      */
-    public static final Map<String, String> getWxTokenAndOpenid(String code, String host) throws Exception {
+    public static Map<String, String> getWxTokenAndOpenid(String code, String host)
+        throws Exception {
         Map<String, String> map = new HashMap<String, String>();
         // 获取令牌
         String tokenUrl = ResourcesConfig.THIRDPARTY.getString("accessTokenURL_wx");
-        tokenUrl = tokenUrl + "?appid=" + ResourcesConfig.THIRDPARTY.getString("app_id_wx") + "&secret="
-                + ResourcesConfig.THIRDPARTY.getString("app_key_wx") + "&code=" + code + "&grant_type=authorization_code";
+        tokenUrl =
+            tokenUrl + "?appid=" + ResourcesConfig.THIRDPARTY.getString("app_id_wx") + "&secret="
+                + ResourcesConfig.THIRDPARTY.getString("app_key_wx") + "&code=" + code
+                + "&grant_type=authorization_code";
         String tokenRes = HttpUtil.get(tokenUrl);
         if (tokenRes != null && tokenRes.indexOf("access_token") > -1) {
             Map<String, String> tokenMap = toMap(tokenRes);
@@ -174,7 +184,7 @@ public final class ThirdPartyLoginHelper {
      * @param host
      * @return
      */
-    public static final JSONObject getSinaTokenAndUid(String code, String host) {
+    public static JSONObject getSinaTokenAndUid(String code, String host) {
         JSONObject json = null;
         try {
             // 获取令牌
@@ -220,7 +230,7 @@ public final class ThirdPartyLoginHelper {
      * @param str
      * @return
      */
-    private static final Map<String, String> toMap(String str) {
+    private static Map<String, String> toMap(String str) {
         Map<String, String> map = new HashMap<String, String>();
         String[] strs = str.split("&");
         for (String str2 : strs) {
